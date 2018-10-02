@@ -10,7 +10,7 @@ const TodoSchema = new Schema({
         required: "Todo Item is Required"
     },
     todoStatus: {
-        type: Boolean,
+        type: Boolean
     }
 });
     // This creates our model from the above schema, using Mongoose's model method

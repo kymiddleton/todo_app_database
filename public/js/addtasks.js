@@ -8,7 +8,8 @@ $(function () {
         console.log('Submit works');
 
         const newTodo = {
-            todoItem: $('#todo-input').val().trim()
+            todoItem: $('#todo-input').val().trim(),
+            todoStatus: false
         };
 
         if (newTodo.todoItem === '') {
@@ -18,7 +19,7 @@ $(function () {
         $.ajax({ url: "/api/todo_list", method: "POST", data: newTodo }).then(function (data) {
             console.log(data, "This should be the updated list");
             // Clear the form when submitting
-            populateList(data);
+            getAllItems()
             $('#todo-input').val('');
             $('#todo-input').focus();
         });
@@ -28,67 +29,90 @@ $(function () {
 function populateList(data) {
     $('#addTasks').empty();
     data.forEach((e, index) => {
-            const listTag = $('<li>');
-            const textDiv = $('<div>');
-            const checkbox = $('<i class="far fa-square unchecked complete">');
-            const button = $('<i class="fas fa-times">');
+        const listTag = $('<li>');
+        const textDiv = $('<div>');
+        if (e.todoStatus == true) {
+            checkbox = $('<i class="far fa-check-square">');
+        } else {
+            checkbox = $('<i class="far fa-square unchecked complete">');
+        }
 
-            listTag.append()
-            listTag.append(checkbox);
-            addUpdateListener(checkbox);
+        checkbox.attr('data-id', e._id);
+        checkbox.attr('data-status', e.todoStatus);
+        const button = $('<i class="fas fa-times">');
 
-            listTag.append(textDiv);
-            listTag.append(button);
-            
-            textDiv.addClass('textDiv');
-            textDiv.text(e.todoItem);
+        listTag.append()
+        listTag.append(checkbox);
+        addUpdateListener(checkbox);
 
-            // button.text('x');
-            button.addClass('delete');
-            button.attr('data-index', index);
-            
-            $('#addTasks').append(listTag);
-            
+        listTag.append(textDiv);
+        listTag.append(button);
+
+        textDiv.addClass('textDiv');
+        textDiv.text(e.todoItem);
+
+        // button.text('x');
+        button.addClass('delete');
+        button.attr('data-id', e._id);
+
+        $('#addTasks').append(listTag);
+
     });
     addDeleteListener();
 }
 
-function toggleCheckbox (element) {
-    if($(element).hasClass('fa-square')){
-    $(element).removeClass('fa-square');
-    $(element).addClass('fa-check-square');
-    }else {
+function toggleCheckbox(element) {
+    if ($(element).hasClass('fa-square')) {
+        $(element).removeClass('fa-square');
+        $(element).addClass('fa-check-square');
+    } else {
         $(element).removeClass('fa-check-square');
         $(element).addClass('fa-square');
     }
 }
 
-function addUpdateListener (element) {
+function addUpdateListener(element) {
     $(element).on('click', function () {
+        let id = $(this).attr('data-id');
+        let status = $(this).attr('data-status');
+
+        if (status === "false") {
+            status = true;
+        } else {
+            status = false;
+        }
+
+        const updateTask =
+        {
+            id: id,
+            todoStatus: status
+        }
+
+        $.post('/api/update/todo_list', updateTask, function (data) {
+            getAllItems();
+        });
+
         toggleCheckbox(this);
     })
-    let descriptionTag = $(element).siblings("div").first();
-    let text = descriptionTag.text();
-    const addtasksArray = 
-        {
-            todoItem: text,
-            todoStatus: false
-        }
-    ;
-    
-    $.post('/api/update/todo_list', addtasksArray).then(function(data){
-        populateList(data); //Don't think this works....
-    }) 
 }
+
+function getAllItems() {
+    $.get('/api/todo_list', function (data) {
+
+        populateList(data);
+    });
+}
+
+getAllItems();
 
 function addDeleteListener() {
     $(".delete").on('click', function () {
-        const deleteThisIndex = {
-            index: $(this).attr('data-index')
+        const deleteThisId = {
+            id: $(this).attr('data-id')
         }
 
-        $.post('/api/delete/todo_list', deleteThisIndex, function (data) {
-            populateList(data);
+        $.post('/api/delete/todo_list', deleteThisId, function (data) {
+            getAllItems();
         });
 
     });
