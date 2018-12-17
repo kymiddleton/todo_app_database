@@ -32,14 +32,16 @@ function populateList(data) {
         const listTag = $('<li>');
         const textDiv = $('<div>');
         if (e.todoStatus == true) {
-            checkbox = $('<i class="far fa-check-square">');
+            checkbox = $('<i class="far fa-check-square">'); //checked completed
         } else {
             checkbox = $('<i class="far fa-square unchecked complete">');
+            //unchecked not completed
         }
 
         checkbox.attr('data-id', e._id);
         checkbox.attr('data-status', e.todoStatus);
         const button = $('<i class="fas fa-times">');
+        //x for for delete
 
         listTag.append()
         listTag.append(checkbox);
@@ -62,12 +64,12 @@ function populateList(data) {
 }
 
 function toggleCheckbox(element) {
-    if ($(element).hasClass('fa-square')) {
-        $(element).removeClass('fa-square');
+    if ($(element).hasClass('fa-square')) { // not completed box
+        $(element).removeClass('fa-square');//not completed box
         $(element).addClass('fa-check-square');
     } else {
-        $(element).removeClass('fa-check-square');
-        $(element).addClass('fa-square');
+        $(element).removeClass('fa-check-square');//checked completed
+        $(element).addClass('fa-square');//not completed box
     }
 }
 
