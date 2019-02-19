@@ -28,12 +28,20 @@ require('./routes/html-routes.js')(app);
 mongoose.Promise = global.Promise;
 
 //Connect to the Mongo DB
+// mongoose.connect(
+//   process.env.MONGODB_URI || "mongodb://kymiddleton:M1ddlet0n@ds119523.mlab.com:19523/heroku_lchnz60p",
+//   {
+//     useMongoClient: true
+//   }
+// );
+
 mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://kymiddleton:M1ddlet0n@ds119523.mlab.com:19523/heroku_lchnz60p",
+  process.env.MONGODB_URI || "mongodb://todoapp:password1234@ds119523.mlab.com:19523/heroku_lchnz60p",
   {
     useMongoClient: true
   }
 );
+
 
 // Starts our server on the predefined PORT
 app.listen(PORT, function(){

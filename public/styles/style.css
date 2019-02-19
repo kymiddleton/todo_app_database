@@ -2,6 +2,7 @@ body {
     height: 100vh;
     font-family: 'Roboto', sans-serif;
     font-size: 20px;
+    background-color: rgba(208, 206, 206, 0.13);
 }
 
 .one {
@@ -40,6 +41,7 @@ form {
 
 input {
     display: grid;
+    align-content: center;
     border-radius: 20px;
     border-color: #dd0495;
     border-width: 1px;
